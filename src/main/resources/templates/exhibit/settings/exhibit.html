@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body>
+<nav th:replace="fragments.html :: main-nav"></nav>
+<div class="container">
+    <div th:replace="fragments.html :: exhibit-info"></div>
+    <div th:replace="fragments.html :: exhibit-menu(exhibitMenu='settings')"></div>
+    <div class="row mt-3 justify-content-center">
+        <div class="col-2">
+            <div th:replace="fragments.html :: exhibit-settings-menu(currentMenu='exhibit')"></div>
+        </div>
+        <div class="col-8">
+            <div th:replace="fragments.html :: message"></div>
+            <div class="row">
+                <h5 class="col-sm-12">작품 공개 및 종료</h5>
+                <form th:if="${!exhibit.published && !exhibit.closed}" class="col-sm-12" action="#" th:action="@{'/exhibit/' + ${exhibit.getPath()} + '/settings/exhibit/publish'}" method="post" novalidate>
+                    <div class="alert alert-info" role="alert">
+                        작품를 다른 사용자에게 공개할 준비가 되었다면 버튼을 클릭하세요.<br/>
+                        작품를 공개하면 주제과 전공분야에 관심있는 다른 사용자에게 알림을 전송합니다.
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품 공개</button>
+                    </div>
+                </form>
+                <form th:if="${exhibit.published && !exhibit.closed}" class="col-sm-12" action="#" th:action="@{'/exhibit/' + ${exhibit.getPath()} + '/settings/exhibit/close'}" method="post" novalidate>
+                    <div class="alert alert-warning" role="alert">
+                        작품이 보완되고 있다면 작품 전시를 잠시 비공개로 전환하세요.<br/>
+                        작품 제목과 주소는 수정되지 않습니다.
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-warning" type="submit" aria-describedby="submitHelp">작품 종료</button>
+                    </div>
+                </form>
+                <div th:if="${exhibit.closed}" class="col-sm-12 alert alert-info">
+                    이 작품는 <span class="date-time" th:text="${exhibit.closedDateTime}"></span>에 종료됐습니다.<br/>
+                    다시 작품를 전시하고 싶다면 새로운 작품를 등록하세요.<br/>
+                </div>
+            </div>
+
+            <hr th:if="${!exhibit.closed}"/>
+            <div class="row" th:if="${!exhibit.closed}">
+                <h5 class="col-sm-12">작품 경로</h5>
+                <form class="col-sm-12 needs-validation" th:action="@{'/exhibit/' + ${exhibit.path} + '/settings/exhibit/path'}"
+                      method="post" novalidate>
+                    <div class="alert alert-warning" role="alert">
+                        작품 경로를 수정하면 이전에 사용하던 경로로 작품에 접근할 수 없으니 주의하세요. <br/>
+                    </div>
+                    <div class="form-group">
+                        <input id="path" type="text" name="newPath" th:value="${exhibit.path}" class="form-control"
+                               placeholder="예) exhibit-path" aria-describedby="pathHelp" required>
+                        <small id="pathHelp" class="form-text text-muted">
+                            공백없이 문자, 숫자, 대시(-)와 언더바(_)만 3자 이상 20자 이내로 입력하세요. 작품 홈 주소에 사용합니다. 예) /exhibit/<b>exhibit-path</b>
+                        </small>
+                        <small class="invalid-feedback">작품 경로를 입력하세요.</small>
+                        <small class="form-text text-danger" th:if="${exhibitPathError}" th:text="${exhibitPathError}">Path Error</small>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-warning" type="submit" aria-describedby="submitHelp">경로 수정</button>
+                    </div>
+                </form>
+            </div>
+
+            <hr th:if="${!exhibit.closed}"/>
+            <div class="row" th:if="${!exhibit.closed}">
+                <h5 class="col-12">작품명</h5>
+                <form class="needs-validation col-12" action="#" th:action="@{'/exhibit/' + ${exhibit.path} + '/settings/exhibit/title'}" method="post" novalidate>
+                    <div class="alert alert-warning" role="alert">
+                        작품명을 수정합니다.<br/>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">작품명</label>
+                        <input id="title" type="text" name="newTitle" th:value="${exhibit.title}" class="form-control"
+                               placeholder="작품명" aria-describedby="titleHelp" required maxlength="50">
+                        <small id="titleHelp" class="form-text text-muted">
+                            작품명을 50자 이내로 입력하세요.
+                        </small>
+                        <small class="invalid-feedback">작품명을 입력하세요.</small>
+                        <small class="form-text text-danger" th:if="${exhibitTitleError}" th:text="${exhibitTitleError}">Title Error</small>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-warning" type="submit" aria-describedby="submitHelp">작품명 수정</button>
+                    </div>
+                </form>
+            </div>
+
+            <hr/>
+            <div class="row" th:if="${exhibit.isRemovable()}">
+                <h5 class="col-sm-12 text-danger">작품 삭제</h5>
+                <form class="col-sm-12" action="#" th:action="@{'/exhibit/' + ${exhibit.getPath()} + '/settings/exhibit/remove'}" method="post" novalidate>
+                    <div class="alert alert-danger" role="alert">
+                        작품를 삭제하면 작품 관련 모든 기록을 삭제하며 복구할 수 없습니다. <br/>
+                        <b>다음에 해당하는 작품는 자동으로 삭제 됩니다.</b>
+                        <ul>
+                            <li>만든지 1주일이 지난 비공개 작품</li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-danger" type="submit" aria-describedby="submitHelp">작품 삭제</button>
+                    </div>
+                </form>
+            </div>
+            <div class="row" th:if="${!exhibit.isRemovable()}">
+                <h5 class="col-sm-12 text-danger">작품 삭제</h5>
+                <form class="col-sm-12" action="#" th:action="@{'/exhibit/' + ${exhibit.getPath()} + '/settings/exhibit/remove'}" method="post" novalidate>
+                    <div class="alert alert-danger" role="alert">
+                        공개 중인 작품는 삭제할 수 없습니다.
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-danger" type="submit" aria-describedby="submitHelp" disabled>작품 삭제</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:replace="fragments.html :: tooltip"></script>
+<script th:replace="fragments.html :: form-validation"></script>
+</body>
+</html>

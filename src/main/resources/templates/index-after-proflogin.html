@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body id="page-top">
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav" style="background-color: #2653AF;">
+    <div class="container">
+        <a class="navbar-brand text-white" href="/" th:href="@{/}">SKU
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars ms-1"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" id="professorDropdown">
+                        My page
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" th:href="@{'/settings/password'}">설정</a></li>
+                        <li><form class="form-inline my-2 my-lg-0" action="#" th:action="@{/logout}" method="post">
+                            <button class="dropdown-item" type="submit">로그아웃</button>
+                        </form></li>
+                    </ul>
+                </li>
+                <!--li class="nav-item">
+                    <a class="nav-link" th:href="@{/notifications}">
+                        <i th:if="${!hasNotification}" class="fa fa-bell-o" aria-hidden="true"></i>
+                        <span class="text-info" th:if="${hasNotification}"><i class="fa fa-bell" aria-hidden="true"></i></span>
+                    </a>
+                </li-->
+                <li class="nav-item">
+                    <form th:action="@{/search/exhibit}" class="d-flex" method="get">
+                        <!--input class="form-control mr-sm-2" name="keyword" type="search" placeholder="search"
+                               aria-label="Search"/-->
+                        <input class="form-control me-2" name="keyword" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+    <header class="masthead">
+        <div class="container">
+            <div class="masthead-subheading">SEOKYEONG UNIVERSITY</div>
+            <div class="masthead-heading text-uppercase">online exhibition</div>
+            <span class="masthead-subheading" >professor
+            </span>
+            <span class="masthead-subheading" th:text="${account.name}">name</span>
+        </div>
+    </header>
+
+    <section class="page-section" id="evaluation" style="background-color: #ffd16b;">
+        <div class="container" style="background-color: #ffd16b;">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase text-green">평가미완료 작품</h2>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-md-4" th:each="exhibit: ${exhibitList}" th:if="${(!exhibit.passed && !exhibit.noPassed && !exhibit.add) || (!exhibit.passedTwo && !exhibit.noPassedTwo && !exhibit.addTwo) || (!exhibit.passedThree && !exhibit.noPassedThree && !exhibit.addThree)}">
+                        <div class="card mb-4 shadow-sm">
+                            <img th:src="${exhibit.image}" class="card-img-top" th:alt="${exhibit.title}" >
+                            <div class="card-body">
+                                <h5 class="card-title context" th:text="${exhibit.title}"></h5>
+                                <p class="card-text text-center" th:text="${exhibit.shortDescription}">Short description</p>
+                                <p class="card-text context">
+                                <span th:each="tag: ${exhibit.tags}" class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
+                                    <a th:href="@{'/search/exhibit?keyword=' + ${tag.title}}" class="text-decoration-none text-black">
+                                        <i class="fa fa-tag"></i> <span th:text="${tag.title}">Tag</span>
+                                    </a>
+                                </span>
+                                    <span th:each="major: ${exhibit.majors}" class="font-weight-light text-monospace badge badge-primary mr-3">
+                                    <a th:href="@{'/search/exhibit?keyword=' + ${major.getDepartment()}}" class="text-decoration-none text-black">
+                                        <i class="fa fa-globe"></i> <span th:text="${major.department}" class="text-black">Major</span>
+                                    </a>
+                                </span>
+                                </p>
+                                <div class="text-center" th:if="${(account != null) && (!account.isProfessor)}">
+                                    <a th:href="@{'/exhibit/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="text-center" th:if="${account == null}">
+                                    <a th:href="@{'/exhibition/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="text-center" th:if="${(account != null) && (account.isProfessor)}">
+                                    <a th:href="@{'/exhibition/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <span th:text="${exhibit.name}"></span>
+                                    </small>
+                                    <small class="text-muted date" th:text="${exhibit.publishedDateTime}">9 mins</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="pass" style="background-color: #ffd16b;">
+        <div class="container" style="background-color: #ffd16b;">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase text-green">통과된 작품</h2>
+            </div>
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-md-4" th:each="exhibit: ${exhibitList}" th:if="${exhibit.passed && exhibit.passedTwo && exhibit.passedThree}">
+                        <div class="card mb-4 shadow-sm">
+                            <img th:src="${exhibit.image}" class="card-img-top" th:alt="${exhibit.title}" >
+                            <div class="card-body">
+                                <h5 class="card-title context" th:text="${exhibit.title}"></h5>
+                                <p class="card-text text-center" th:text="${exhibit.shortDescription}">Short description</p>
+                                <p class="card-text context">
+                                    <span th:each="tag: ${exhibit.tags}" class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
+                                        <a th:href="@{'/search/exhibit?keyword=' + ${tag.title}}" class="text-decoration-none text-black">
+                                            <i class="fa fa-tag"></i> <span th:text="${tag.title}">Tag</span>
+                                        </a>
+                                    </span>
+                                    <span th:each="major: ${exhibit.majors}" class="font-weight-light text-monospace badge badge-primary mr-3">
+                                        <a th:href="@{'/search/exhibit?keyword=' + ${major.getDepartment()}}" class="text-decoration-none text-black">
+                                            <i class="fa fa-globe"></i> <span th:text="${major.department}" class="text-black">Major</span>
+                                        </a>
+                                    </span>
+                                </p>
+                                <div class="text-center" th:if="${(account != null) && (!account.isProfessor)}">
+                                    <a th:href="@{'/exhibit/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="text-center" th:if="${account == null}">
+                                    <a th:href="@{'/exhibition/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="text-center" th:if="${(account != null) && (account.isProfessor)}">
+                                    <a th:href="@{'/exhibition/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <span th:text="${exhibit.name}"></span>
+                                    </small>
+                                    <small class="text-muted date" th:text="${exhibit.publishedDateTime}">9 mins</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="add" style="background-color: #ffd16b;">
+        <div class="container" style="background-color: #ffd16b;">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase text-green">보완중인 작품</h2>
+            </div>
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-md-4" th:each="exhibit: ${exhibitList}" th:if="${exhibit.add || exhibit.addTwo ||exhibit.addThree}">
+                        <div class="card mb-4 shadow-sm">
+                            <img th:src="${exhibit.image}" class="card-img-top" th:alt="${exhibit.title}" >
+                            <div class="card-body">
+                                <h5 class="card-title context" th:text="${exhibit.title}"></h5>
+                                <p class="card-text text-center" th:text="${exhibit.shortDescription}">Short description</p>
+                                <p class="card-text context">
+                                        <span th:each="tag: ${exhibit.tags}" class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
+                                            <a th:href="@{'/search/exhibit?keyword=' + ${tag.title}}" class="text-decoration-none text-black">
+                                                <i class="fa fa-tag"></i> <span th:text="${tag.title}">Tag</span>
+                                            </a>
+                                        </span>
+                                    <span th:each="major: ${exhibit.majors}" class="font-weight-light text-monospace badge badge-primary mr-3">
+                                            <a th:href="@{'/search/exhibit?keyword=' + ${major.getDepartment()}}" class="text-decoration-none text-black">
+                                                <i class="fa fa-globe"></i> <span th:text="${major.department}" class="text-black">Major</span>
+                                            </a>
+                                        </span>
+                                </p>
+                                <div class="text-center" th:if="${(account != null) && (!account.isProfessor)}">
+                                    <a th:href="@{'/exhibit/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="text-center" th:if="${account == null}">
+                                    <a th:href="@{'/exhibition/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="text-center" th:if="${(account != null) && (account.isProfessor)}">
+                                    <a th:href="@{'/exhibition/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <span th:text="${exhibit.name}"></span>
+                                    </small>
+                                    <small class="text-muted date" th:text="${exhibit.publishedDateTime}">9 mins</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="nopass" style="background-color: #ffd16b;">
+        <div class="container" style="background-color: #ffd16b;">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase text-green">불통과된 작품</h2>
+            </div>
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-md-4" th:each="exhibit: ${exhibitList}" th:if="${exhibit.noPassed || exhibit.noPassedTwo || exhibit.noPassedThree}">
+                        <div class="card mb-4 shadow-sm">
+                            <img th:src="${exhibit.image}" class="card-img-top" th:alt="${exhibit.title}" >
+                            <div class="card-body">
+                                <h5 class="card-title context" th:text="${exhibit.title}"></h5>
+                                <p class="card-text text-center" th:text="${exhibit.shortDescription}">Short description</p>
+                                <p class="card-text context">
+                                            <span th:each="tag: ${exhibit.tags}" class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
+                                                <a th:href="@{'/search/exhibit?keyword=' + ${tag.title}}" class="text-decoration-none text-black">
+                                                    <i class="fa fa-tag"></i> <span th:text="${tag.title}">Tag</span>
+                                                </a>
+                                            </span>
+                                    <span th:each="major: ${exhibit.majors}" class="font-weight-light text-monospace badge badge-primary mr-3">
+                                                <a th:href="@{'/search/exhibit?keyword=' + ${major.getDepartment()}}" class="text-decoration-none text-black">
+                                                    <i class="fa fa-globe"></i> <span th:text="${major.department}" class="text-black">Major</span>
+                                                </a>
+                                            </span>
+                                </p>
+                                <div class="text-center" th:if="${(account != null) && (!account.isProfessor)}">
+                                    <a th:href="@{'/exhibit/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="text-center" th:if="${account == null}">
+                                    <a th:href="@{'/exhibition/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="text-center" th:if="${(account != null) && (account.isProfessor)}">
+                                    <a th:href="@{'/exhibition/' + ${exhibit.path}}" class="btn btn-primary">More</a>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <span th:text="${exhibit.name}"></span>
+                                    </small>
+                                    <small class="text-muted date" th:text="${exhibit.publishedDateTime}">9 mins</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </div>
+    <div th:replace="fragments.html :: footer"></div>
+    <div th:replace="fragments.html :: date-time"></div>
+</body>
+</html>

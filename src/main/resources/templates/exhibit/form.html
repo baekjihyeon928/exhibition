@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body style="background: #476ebf">
+<div th:replace="fragments.html :: main-nav"></div>
+
+<div class="container">
+    <div class="py-5 text-center text-white">
+        <br/><br/><br/>
+        <h2>작품 등록</h2>
+    </div>
+    <div class="row justify-content-center">
+        <form class="needs-validation col-sm-10" th:action="@{/new-exhibit}" th:object="${exhibitForm}" method="post" novalidate>
+
+            <div class="form-group">
+                <label for="path">작품 URL</label>
+                <input id="path" type="text" th:field="*{path}" class="form-control"
+                       placeholder="예) study-path" aria-describedby="pathHelp" required min="2" max="20">
+                <small id="pathHelp" class="form-text text-white">
+                    공백없이 문자, 숫자, 대시(-)와 언더바(_)만 2자 이상 20자 이내로 입력하세요. 작품 주소에 사용합니다. 예) /exhibit/<b>exhibit-path</b>
+                </small>
+                <small class="invalid-feedback">경로를 입력하세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('path')}" th:errors="*{path}">Path Error</small>
+            </div>
+
+            <div class="form-group">
+                <label for="title">작품명</label>
+                <input id="title" type="text" th:field="*{title}" class="form-control"
+                       placeholder="작품명" aria-describedby="titleHelp" required max="50">
+                <small id="titleHelp" class="form-text text-white">
+                    작품명을 50자 이내로 입력하세요.
+                </small>
+                <small class="invalid-feedback">작품명을 입력하세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title Error</small>
+            </div>
+
+            <div class="form-group">
+                <label for="shortDescription">짧은 소개</label>
+                <textarea id="shortDescription" type="textarea" th:field="*{shortDescription}" class="form-control"
+                          placeholder="작품을 짧게 소개해 주세요." aria-describedby="shortDescriptionHelp" required maxlength="100"></textarea>
+                <small id="shortDescriptionHelp" class="form-text text-white">
+                    100자 이내로 소개해 주세요.
+                </small>
+                <small class="invalid-feedback">짧은 소개를 입력하세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('shortDescription')}" th:errors="*{shortDescription}">ShortDescription Error</small>
+            </div>
+
+
+            <div class="form-group">
+                <label for="fullDescription">상세 소개</label>
+                <textarea id="fullDescription" type="textarea" th:field="*{fullDescription}" class="editor form-control"
+                          placeholder="작품을 자세히 설명해 주세요." aria-describedby="fullDescriptionHelp" required></textarea>
+                <small id="fullDescriptionHelp" class="form-text text-white">
+                    제작한 작품에 대해 자세히 적어 주세요.
+                </small>
+                <small class="invalid-feedback">상세 소개를 입력하세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('fullDescription')}" th:errors="*{fullDescription}">FullDescription Error</small>
+            </div>
+
+
+
+
+            <div class="d-grid gap-2 col-2 mx-auto">
+                <button class="btn btn-primary btn-block" type="submit"
+                        aria-describedby="submitHelp">완료</button>
+            </div>
+        </form>
+
+
+    </div>
+
+</div>
+<footer class="footer py-4" style="background-color: #476ebf;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 text-lg-start"></div>
+        </div>
+    </div>
+</footer>
+<script th:replace="fragments.html :: tooltip"></script>
+<script th:replace="fragments.html :: form-validation"></script>
+<script th:replace="fragments.html :: editor-script"></script>
+<script th:replace="fragments.html :: ajax-csrf-header"></script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+    <div th:replace="fragments.html :: main-nav"></div>
+    <div class="container py-5">
+        <div class="text-center pt-4">
+            <h2 th:text="${exhibit.title}" class="section-heading text-uppercase text-darkblue">Title</h2>
+            <p class="text-center lead mb-2" th:text="${exhibit.shortDescription}">ShortDescription</p>
+            <div sec:authorize="isAuthenticated()" th:if="${exhibit.isOwner(#authentication.principal)}" th:replace="fragments.html :: exhibit-menu(exhibitMenu='info')"></div>
+        </div>
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5">
+                <!--img th:src="${exhibit.image}" class="card-img-top mb-2" th:alt="${exhibit.title}" /></div-->
+            <h3 class="text-center lead mb-2" th:utext="${exhibit.fullDescription}">FullDescription</h3>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center" sec:authorize="isAuthenticated()" th:if="${account != null && !account.isProfessor}">
+                <div class="portfolio-item" sec:authorize="isAuthenticated()" th:if="${exhibit.isOwner(#authentication.principal)}">
+                   <button type="button" class="btn btn-secondary" >
+                            <a class="text-white text-decoration-none" th:href="@{'/exhibit/' + ${exhibit.path} + '/new-event'}">
+                                스터디
+                            </a>
+                    </button>
+                    <button type="button" class="btn btn-secondary" >
+                        <a class="text-white text-decoration-none"  href="#" th:href="@{'/exhibit/' + ${exhibit.path} + '/settings/description'}">
+                            수정
+                        </a>
+                    </button>
+                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal1" th:if="${(!exhibit.passed && !exhibit.noPassed && !exhibit.add)||(!exhibit.passedTwo && !exhibit.noPassedTwo && !exhibit.addTwo)||(!exhibit.passedThree && !exhibit.noPassedThree && !exhibit.addThree)}">
+                        평가중
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal2" th:if="${exhibit.passed && exhibit.passedTwo && exhibit.passedThree}">
+                        평가완료
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal3" th:if="${exhibit.noPassed || exhibit.noPassedTwo || exhibit.noPassedThree || exhibit.add || exhibit.addTwo ||exhibit.addThree}">
+                        평가완료
+                    </button>
+                </div>
+                <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel1">평가중</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                평가가 진행중입니다.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel2">평가완료</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                통과
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel3">평가완료</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" th:if="${exhibit.noPassed || exhibit.noPassedTwo || exhibit.noPassedThree}">
+                            불통과
+                        </div>
+                        <div class="modal-body" th:if="${exhibit.add || exhibit.addTwo ||exhibit.addThree}">
+                            보완
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <script th:replace="fragments.html :: tooltip"></script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments.html :: head"></head>
+<body id="page-top">
+<nav th:replace="fragments.html :: main-nav"></nav>
+
+    <div class="alert alert-warning" role="alert" th:if="${account != null && !account.emailVerified}">
+    전시회 가입을 완료하려면 <a href="#" th:href="@{/check-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
+    </div>
+
+    <header class="masthead">
+        <div class="container">
+            <div class="masthead-subheading">SEOKYEONG UNIVERSITY</div>
+            <div class="masthead-heading text-uppercase">online exhibition</div>
+        <!--a class="btn btn-primary btn-xl text-uppercase" href="@{/sign-up}">sign-up</a-->
+            <div th:if="${account != null && !account.isProfessor && account.tags != null}">
+            <span th:each="tag: ${account.tags}" class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
+                 <a th:href="@{'/search/exhibit?keyword=' + ${tag.title}}" class="text-decoration-none" style="font-size: medium;" >
+                   # <span th:text="${tag.title}">Tag</span>
+                 </a>
+            </span>
+            <span th:each="major: ${account.majors}" class="font-weight-light text-monospace badge badge-primary mr-3" >
+                 <a th:href="@{'/search/exhibit?keyword=' + ${major.getDepartment()}}" class="text-decoration-none" style="font-size: medium;">
+                   # <span th:text="${major.getDepartment()}">Major</span>
+                 </a>
+            </span>
+            </div>
+            <span th:if="${account != null && !account.isProfessor}">
+            <a class="btn btn-primary btn-xl text-uppercase" th:href="@{/new-exhibit}">작품 등록</a>
+            </span>
+        </div>
+    </header>
+
+
+<section class="page-section py-5" th:if="${account != null && !account.isProfessor}" style="background-color: #ffd16b;">
+    <div class="container px-4 px-lg-5 my-5" th:each="exhibit: ${exhibitOwnerOf}" >
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase text-yellow" th:if="${#lists.isEmpty(exhibitOwnerOf)}">작품을 제출해주세요.</h2>
+            <h2 th:text="${exhibit.title}" class="section-heading text-uppercase text-darkblue" th:if="${!#lists.isEmpty(exhibitOwnerOf)}" >나의 작품</h2>
+        </div>
+        <div class="row align-items-center justify-content-center" th:if="${!#lists.isEmpty(exhibitOwnerOf)}">
+            <div class="col-lg-5">
+                <img th:src="${exhibit.image}" class="card-img-top mb-2" th:alt="${exhibit.title}" /></div>
+            <h3 class="text-center lead mb-2" th:text="${exhibit.shortDescription}">ShortDescription</h3>
+            <h4 class="text-center lead mb-2" th:utext="${exhibit.fullDescription}">FullDescription</h4>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <div class="portfolio-item">
+                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal1" th:if="${(!exhibit.passed && !exhibit.noPassed && !exhibit.add)||(!exhibit.passedTwo && !exhibit.noPassedTwo && !exhibit.addTwo)||(!exhibit.passedThree && !exhibit.noPassedThree && !exhibit.addThree)}">
+                        평가중
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal2" th:if="${exhibit.passed && exhibit.passedTwo && exhibit.passedThree}">
+                        평가완료
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal3" th:if="${exhibit.noPassed || exhibit.noPassedTwo || exhibit.noPassedThree || exhibit.add || exhibit.addTwo ||exhibit.addThree}">
+                        평가완료
+                    </button>
+                </div>
+                <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel1">평가중</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                평가가 진행중입니다.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel2">평가완료</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                통과
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel3">평가완료</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" th:if="${exhibit.noPassed || exhibit.noPassedTwo || exhibit.noPassedThree}">
+                            불통과
+                        </div>
+                        <div class="modal-body" th:if="${exhibit.add || exhibit.addTwo ||exhibit.addThree}">
+                            보완
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <!--button type="button" class="btn btn-secondary" sec:authorize="isAuthenticated()" th:if="${exhibit.isOwner(#authentication.principal)}"
+                     th:href="@{'/exhibit/' + ${exhibit.path} + '/settings/description'}">
+                    수정
+                </button-->
+                <button type="button" class="btn btn-secondary">
+                <a sec:authorize="isAuthenticated()" th:if="${exhibit.isOwner(#authentication.principal)}"
+                   class="text-white text-decoration-none" th:classappend="${exhibitMenu == 'settings'}? active" href="#" th:href="@{'/exhibit/' + ${exhibit.path} + '/settings/description'}">
+                    수정
+                </a>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <section class="page-section" id="services" style="background-color: #ECA39D;">
+        <div class="container" >
+            <div class="text-center">
+                <!--h2 class="section-heading text-uppercase text-yellow">LATEST ARTWORK</h2-->
+            </div>
+            <div class="row justify-content-center pt-3">
+                <div th:replace="fragments.html :: exhibit-list (exhibitList=${exhibitList})"></div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+<!--section class="page-section " id="portfolio" style="background-color: #ECA39D;" th:if="${account != null && account.isProfessor}">
+    <div class="container" style="background-color: #ECA39D;">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase text-yellow" th:if="${#lists.isEmpty(exhibitList)}">관심 주제와 전공을 등록해 주세요.</h2>
+            <h2 class="section-heading text-uppercase text-yellow" th:if="${!#lists.isEmpty(exhibitList)}">추천 작품</h2>
+        </div>
+        <div class="row">
+
+
+                <h5 class="font-weight-light mt-3" th:if="${#lists.isEmpty(exhibitListLogin)}">전공 작품이 없습니다.</h5>
+                <h5 class="font-weight-light mt-3" th:if="${!#lists.isEmpty(exhibitListLogin)}">전공작품</h5>
+                <div class="row justify-content-center">
+                    <div th:replace="fragments.html :: exhibit-list (exhibitList=${exhibitListLogin})"></div>
+                </div>
+
+                <div class="row justify-content-center pt-3">
+                    <div th:replace="fragments.html :: exhibit-list (exhibitList=${exhibitListLogin})"></div>
+                </div>
+        </div>
+    </div>
+</section-->
+
+    </div>
+<footer class="footer py-4" style="background-color: #ECA39D;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 text-lg-start"></div>
+        </div>
+    </div>
+</footer>
+    <div th:replace="fragments.html :: date-time"></div>
+</body>
+</html>

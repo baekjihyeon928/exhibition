@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="text-center" style="background: #18388D">
+<div th:replace="fragments.html :: main-nav"></div>
+
+<div class="container">
+    <div class="row justify-content-center">
+    <form class="needs-validation col-sm-6" action="#" th:action="@{/sign-up}" th:object="${signUpForm}" method="post" novalidate>
+    <br/><br/><br/><br/><br/><br/><br/>
+    <h1 class="text-white mb-3 fw-normal">Sign up</h1>
+
+        <div class="form-floating">
+                <input id="id" type="text" th:field="*{id}" class="form-control"
+                       name="id" aria-describedby="idHelp" required minlength="4" maxlength="16">
+                <label for="id">Id : 공백없이 영문, 숫자로만 4자 이상 16자 이내로 입력하세요.</label>
+                <small class="invalid-feedback">아이디를 입력하세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}">Id Error</small>
+            </div><br/>
+
+        <div class="form-floating">
+                <input id="email" type="email" th:field="*{email}" class="form-control"
+                       aria-describedby="emailHelp" required>
+                 <label for="email">Email : 사용자의 이메일을 공개하지 않습니다.</label>
+                <small class="invalid-feedback">이메일을 입력하세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</small>
+            </div><br/>
+
+        <div class="form-floating">
+                <input id="password" type="password" th:field="*{password}" class="form-control"
+                       aria-describedby="passwordHelp" required minlength="8" maxlength="50">
+                <label for="password">Password : 8자 이상 50자 이내로 입력하세요. 영문자, 숫자, 특수기호를 사용할 수 있습니다.</label>
+                <small class="invalid-feedback">패스워드를 입력하세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</small>
+            </div><br/>
+
+        <div class="form-floating">
+                <input id="name" type="text" th:field="*{name}" class="form-control"
+                       aria-describedby="nameHelp" required minlength="1" maxlength="20">
+                <label for="name">Name : 사용자 본인의 한글이름을 입력하세요.</label>
+                <small class="invalid-feedback">이름을 입력하세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</small>
+        </div>
+            <br/>
+                <button class="w-100 btn btn-lg btn-primary" type="submit" aria-describedby="submitHelp">Sign up
+                </button>
+        </form>
+    </div>
+
+
+    <script th:replace="fragments.html :: form-validation"></script>
+
+</div>
+</body>
+</html>

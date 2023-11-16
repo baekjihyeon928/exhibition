@@ -1,0 +1,17 @@
+<!--DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+    <div th:replace="fragments.html :: main-nav"></div>
+    <div class="container">
+        <div th:replace="fragments.html :: exhibit-info"></div>
+        <div th:replace="fragments.html :: exhibit-menu(exhibitMenu='members')"></div>
+
+        <div th:replace="fragments.html :: member-list(members=${exhibit.owners},isOwner=${true})"></div>
+        <div th:replace="fragments.html :: member-list(members=${exhibit.members},isOwner=${false})"></div>
+
+        <div th:replace="fragments.html :: footer"></div>
+    </div>
+    <script th:replace="fragments.html :: tooltip"></script>
+</body>
+</html-->

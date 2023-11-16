@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="em" xmlns:th="http://thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="text-center" style="background: #18388D">
+<div th:replace="fragments.html :: main-nav"></div>
+
+
+<div class="container" >
+    <div class="row justify-content-center form-signin">
+
+        <form class="needs-validation col-sm-6" action="#" th:action="@{/login}" method="post" novalidate>
+            <br/><br/><br/><br/><br/><br/><br/><br/>
+            <h1 class="text-white mb-3 fw-normal">Log in</h1>
+            <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                <p>이메일(또는 아이디)과 패스워드가 정확하지 않습니다.</p>
+                <p>
+                    <a href="#" th:href="@{/email-login}">패스워드 찾기</a>
+                </p>
+            </div>
+
+
+            <div class="form-floating">
+                <input id="username" type="text" name="username" class="form-control" aria-describedby="emailHelp" required>
+                <label for="username">Email address / Id</label>
+            </div>
+            <br/>
+
+            <div class="form-floating">
+                <input id="password" type="password" name="password" class="form-control" aria-describedby="passwordHelp" required>
+                <label for="password">Password</label>
+            </div>
+
+            <div class="checkbox mb-3">
+                <label class="form-check-label text-white" for="rememberMe" aria-describedby="rememberMeHelp">
+                    <input type="checkbox" class="form-check-input" id="rememberMe" name="remember-me" > Remember me
+                </label>
+            </div>
+
+                <button class="w-100 btn btn-lg btn-primary" type="submit" aria-describedby="submitHelp">Sign in</button>
+                <small id="submitHelp" class="form-text text-muted" ><a href="#" th:href="@{/sign-up}">회원가입</a>
+                </small>
+
+        </form>
+    </div>
+
+    <script th:replace="fragments.html :: form-validation"></script>
+</div>
+</body>
+</html>

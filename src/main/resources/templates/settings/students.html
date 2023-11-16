@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+<nav th:replace="fragments.html :: main-nav"></nav>
+<div class="container">
+    <div th:replace="fragments.html :: top"></div>
+    <div class="row mt-5 justify-content-center">
+        <div class="col-2">
+            <div th:replace="fragments.html :: settings-menu(currentMenu='students')"></div>
+        </div>
+        <div class="col-8">
+            <div class="row">
+                <h2 class="col-sm-12">학생 관리</h2>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-info" role="alert">
+                        작품이 평가되는 학생을 입력해주세요.
+                    </div>
+                    <div id="whitelist" th:text="${whitelist}" hidden>
+                    </div>
+                    <input id="students" type="text" name="students" th:value="${#strings.listJoin(students, ',')}"
+                           class="tagify-outside" aria-describedby="tagHelp">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:replace="fragments.html :: ajax-csrf-header"></script>
+<script th:replace="fragments.html :: update-students(baseUrl='/settings/students')"></script>
+</body>
+</html>

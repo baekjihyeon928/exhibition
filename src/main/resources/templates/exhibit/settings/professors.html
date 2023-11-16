@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+<div th:replace="fragments.html :: main-nav"></div>
+<div class="container">
+    <div th:replace="fragments.html :: exhibit-info"></div>
+    <!--div th:replace="fragments.html :: exhibit-menu(exhibitMenu='settings')"></div-->
+    <div class="row mt-3 justify-content-center">
+        <div class="col-2">
+            <div th:replace="fragments.html :: exhibit-settings-menu(currentMenu='professors')"></div>
+        </div>
+        <div class="col-8">
+            <div class="row">
+                <h2 class="col-12">평가교수님</h2>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-success" type="button">민미경 교수님</button>
+                    <button class="btn btn-success" type="button">곽재창 교수님</button>
+                    <button class="btn btn-success" type="button">김치용 교수님</button>
+                    <button class="btn btn-success" type="button">류귀열 교수님</button>
+                    <button class="btn btn-success" type="button">류석원 교수님</button>
+                    <button class="btn btn-success" type="button">노정규 교수님</button>
+                    <button class="btn btn-success" type="button">장문수 교수님</button>
+                    <button class="btn btn-success" type="button">신우창 교수님</button>
+                    <button class="btn btn-success" type="button">김성석 교수님</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

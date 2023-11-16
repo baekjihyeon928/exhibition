@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+<div th:replace="fragments.html :: main-nav"></div>
+<div class="container py-5">
+    <!--div class="text-center pt-4">
+        <h2 th:text="${exhibit.title}" class="section-heading text-uppercase text-darkblue">Title</h2>
+        <h3 class="text-center lead mb-2" th:text="${exhibit.shortDescription}">ShortDescription</h3>
+    </div-->
+    <div th:replace="fragments.html :: exhibit-info"></div>
+    <div class="row align-items-center justify-content-center">
+        <div class="col-lg-5">
+            <!--img th:src="${exhibit.image}" class="card-img-top mb-2" th:alt="${exhibit.title}" /></div-->
+        <h3 class="text-center lead mb-2" th:utext="${exhibit.fullDescription}">FullDescription</h3>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center" sec:authorize="isAuthenticated()" th:if="${account != null && account.isProfessor}">
+            <div class="portfolio-item">
+                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal1" th:if="${!exhibit.passed && !exhibit.noPassed && !exhibit.add}">
+                    평가중
+                </button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal2" th:if="${exhibit.passed && !exhibit.noPassed && !exhibit.add}">
+                    평가완료[통과]
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal10" th:if="${!exhibit.passed && !exhibit.noPassed && exhibit.add}">
+                    평가완료[보완]
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal3" th:if="${!exhibit.passed && exhibit.noPassed && !exhibit.add}">
+                    평가완료[불통과]
+                </button>
+            </div>
+            <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel1">평가중</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                            <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/pass'}" method="post" novalidate>
+                                <div class="form-group">
+                                    <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품통과</button>
+                                </div>
+                            </form></div>
+                            <div>
+                                <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/add'}" method="post" novalidate>
+                                    <div class="form-group">
+                                        <button class="btn btn-outline-warning" type="submit" aria-describedby="submitHelp">작품보완</button>
+                                    </div>
+                                </form></div>
+                            <div>
+                            <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/nopass'}" method="post" novalidate>
+                                <div class="form-group">
+                                    <button class="btn btn-outline-warning" type="submit" aria-describedby="submitHelp">작품불통과</button>
+                                </div>
+                            </form></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel2">평가완료</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            통과
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel3">평가완료</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        불통과
+                        평가결과를
+                        <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/nopassToPass'}" method="post" novalidate>
+                        <div class="form-group">
+                            <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품통과</button>
+                        </div>
+                        </form>
+                        로 수정
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="modal fade" id="exampleModal10" tabindex="-1" aria-labelledby="exampleModalLabel10" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel10">평가완료</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        보완
+                        평가결과를
+                        <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/addToPass'}" method="post" novalidate>
+                            <div class="form-group">
+                                <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품통과</button>
+                            </div>
+                        </form>
+                        <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/addToNoPass'}" method="post" novalidate>
+                            <div class="form-group">
+                                <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품불통과</button>
+                            </div>
+                        </form>
+                        로 수정
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center" sec:authorize="isAuthenticated()" th:if="${account != null && account.isProfessor}">
+            <div class="portfolio-item">
+                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal4" th:if="${!exhibit.passedTwo && !exhibit.noPassedTwo && !exhibit.addTwo}">
+                    평가중
+                </button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal5" th:if="${exhibit.passedTwo && !exhibit.noPassedTwo && !exhibit.addTwo}">
+                    평가완료[통과]
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal11" th:if="${!exhibit.passedTwo && !exhibit.noPassedTwo && exhibit.addTwo}">
+                    평가완료[보완]
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal6" th:if="${!exhibit.passedTwo && exhibit.noPassedTwo && !exhibit.addTwo}">
+                    평가완료[불통과]
+                </button>
+            </div>
+            <div class="modal fade" id="exampleModal4" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel4">평가중</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/passTwo'}" method="post" novalidate>
+                                    <div class="form-group">
+                                        <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품통과</button>
+                                    </div>
+                                </form></div>
+                            <div>
+                                <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/addTwo'}" method="post" novalidate>
+                                    <div class="form-group">
+                                        <button class="btn btn-outline-warning" type="submit" aria-describedby="submitHelp">작품보완</button>
+                                    </div>
+                                </form></div>
+                            <div>
+                                <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/nopassTwo'}" method="post" novalidate>
+                                    <div class="form-group">
+                                        <button class="btn btn-outline-warning" type="submit" aria-describedby="submitHelp">작품불통과</button>
+                                    </div>
+                                </form></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="exampleModal5" tabindex="-1" aria-labelledby="exampleModalLabel5" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel5">평가완료</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            통과
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="exampleModal6" tabindex="-1" aria-labelledby="exampleModalLabel6" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel6">평가완료</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        불통과
+                        평가결과를
+                        <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/nopassTwoToPass'}" method="post" novalidate>
+                        <div class="form-group">
+                            <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품통과</button>
+                        </div>
+                        </form>
+                        로 수정
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="modal fade" id="exampleModal11" tabindex="-1" aria-labelledby="exampleModalLabel11" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel11">평가완료</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        보완
+                        평가결과를
+                        <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/addTwoToPass'}" method="post" novalidate>
+                            <div class="form-group">
+                                <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품통과</button>
+                            </div>
+                        </form>
+                        <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/addTwoToNoPass'}" method="post" novalidate>
+                            <div class="form-group">
+                                <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품불통과</button>
+                            </div>
+                        </form>
+                        로 수정
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center" sec:authorize="isAuthenticated()" th:if="${account != null && account.isProfessor}">
+            <div class="portfolio-item">
+                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal7" th:if="${!exhibit.passedThree && !exhibit.noPassedThree && !exhibit.addThree}">
+                    평가중
+                </button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal8" th:if="${exhibit.passedThree && !exhibit.noPassedThree && !exhibit.addThree}">
+                    평가완료[통과]
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal12" th:if="${!exhibit.passedThree && !exhibit.noPassedThree && exhibit.addThree}">
+                    평가완료[보완]
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal9" th:if="${!exhibit.passedThree && exhibit.noPassedThree && !exhibit.addThree}">
+                    평가완료[불통과]
+                </button>
+            </div>
+            <div class="modal fade" id="exampleModal7" tabindex="-1" aria-labelledby="exampleModalLabel7" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel7">평가중</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/passThree'}" method="post" novalidate>
+                                    <div class="form-group">
+                                        <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품통과</button>
+                                    </div>
+                                </form></div>
+                            <div>
+                                <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/addThree'}" method="post" novalidate>
+                                    <div class="form-group">
+                                        <button class="btn btn-outline-warning" type="submit" aria-describedby="submitHelp">작품보완</button>
+                                    </div>
+                                </form></div>
+                            <div>
+                                <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/nopassThree'}" method="post" novalidate>
+                                    <div class="form-group">
+                                        <button class="btn btn-outline-warning" type="submit" aria-describedby="submitHelp">작품불통과</button>
+                                    </div>
+                                </form></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="exampleModal8" tabindex="-1" aria-labelledby="exampleModalLabel8" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel8">평가완료</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            통과
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="exampleModal9" tabindex="-1" aria-labelledby="exampleModalLabel9" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel9">평가완료</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        불통과
+                        평가결과를
+                            <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/nopassThreeToPass'}" method="post" novalidate>
+                                <div class="form-group">
+                                    <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품통과</button>
+                                </div>
+                            </form>
+                        로 수정
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="modal fade" id="exampleModal12" tabindex="-1" aria-labelledby="exampleModalLabel12" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel12">평가완료</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        보완
+                        평가결과를
+                        <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/addThreeToPass'}" method="post" novalidate>
+                            <div class="form-group">
+                                <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품통과</button>
+                            </div>
+                        </form>
+                        <form class="col-sm-12" action="#" th:action="@{'/exhibition/' + ${exhibit.getPath()} + '/addThreeToNoPass'}" method="post" novalidate>
+                            <div class="form-group">
+                                <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">작품불통과</button>
+                            </div>
+                        </form>
+                        로 수정
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:replace="fragments.html :: tooltip"></script>
+</body>
+</html>
